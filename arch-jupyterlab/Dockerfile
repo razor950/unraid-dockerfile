@@ -2,10 +2,13 @@
 FROM archlinux:latest
 
 # Set maintainer
-LABEL maintainer='BGameiro <projects+docker@bgameiro.me>'
+LABEL maintainer='r00tz <razor950@gmail.com>'
 
 # Update mirrors and packages. Install jupyterlab
-RUN pacman --noconfirm -Syyu python-pip jupyterlab
+RUN pacman --noconfirm -Syyu python-pip jupyterlab base-devel cmake npm nodejs
+RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
+RUN cargo install evcxr_jupyter --version 0.13.0 && evcxr_jupyter --install
 
 ENV JUPYTERLAB_DIR /appdata/lab
 
