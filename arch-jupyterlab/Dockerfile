@@ -5,10 +5,19 @@ FROM archlinux:latest
 LABEL maintainer='r00tz <razor950@gmail.com>'
 
 # Update mirrors and packages. Install jupyterlab
-RUN pacman --noconfirm -Syyu python-pip jupyterlab base-devel cmake npm nodejs
+RUN pacman --noconfirm -Syyu python-pip jupyterlab base-devel cmake npm nodejs lapack file pango cairo zeromq git   
+
+# Sets up Rust and installs the rust juypter kernel
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 RUN cargo install evcxr_jupyter --version 0.13.0 && evcxr_jupyter --install
+
+# Sets up Haskell and installs the haskell juypter kernel
+RUN curl -sSL https://get.haskellstack.org/ | sh && cd /opt
+RUN git clone https://github.com/gibiansky/IHaskell 
+RUN cd IHaskell && pip3 install -r requirements.txt && stack install --fast 
+ENV PATH="/root/.local/bin:${PATH}"
+RUN ihaskell install --stack
 
 ENV JUPYTERLAB_DIR /appdata/lab
 
