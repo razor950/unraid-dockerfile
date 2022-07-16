@@ -14,10 +14,13 @@ RUN cargo install evcxr_jupyter --version 0.13.0 && evcxr_jupyter --install
 
 # Sets up Haskell and installs the haskell juypter kernel
 RUN curl -sSL https://get.haskellstack.org/ | sh && cd /opt
-RUN git clone https://github.com/gibiansky/IHaskell 
+RUN git clone https://github.com/gibiansky/IHaskell --depth=1
 RUN cd IHaskell && pip3 install -r requirements.txt && stack install --fast 
 ENV PATH="/root/.local/bin:${PATH}"
 RUN ihaskell install --stack
+
+COPY stack.yaml /root/.stack/global-project/stack.yaml
+RUN stack install --fast 
 
 ENV JUPYTERLAB_DIR /appdata/lab
 
